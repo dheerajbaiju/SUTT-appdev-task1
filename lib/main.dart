@@ -2,6 +2,7 @@ import 'package:finalweatherapp/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'models.dart';
+import 'package:finalweatherapp/location.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,51 +19,21 @@ class _MyAppState extends State<MyApp> {
   String latitude;
   String longitude;
   var locationMessage = '';
-
   WeatherResponse _response;
   Position currentposition;
 
-  /*Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  @override
+  void initState() {
+    super.initState();
+    _locationSearch();
+  }
 
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+  Future<Position> _determinePosition() async {
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.low);
     latitude = position.latitude.toString();
     longitude = position.longitude.toString();
-    currentposition = position;
-    return position;
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,8 +81,7 @@ class _MyAppState extends State<MyApp> {
                     textAlign: TextAlign.center),
               ),
             ),
-            //ElevatedButton(onPressed: _locationSearch, child: Text('Current location')),
-            ElevatedButton(onPressed: _search, child: Text('Search')),
+            ElevatedButton(onPressed: _search, child: Text('Current location')),
           ],
         ),
       ),
@@ -123,16 +93,10 @@ class _MyAppState extends State<MyApp> {
     setState(() => _response = response);
   }
 
-  /* void _locationSearch() async {
-    _determinePosition();
-    final response = await _dataService.getWeatherFromCoord(
-        currentposition.latitude.toString(),
-        currentposition.longitude.toString());
+  void _locationSearch() async {
+    await _determinePosition();
+    final response =
+        await _dataService.getWeatherFromCoord(latitude, longitude);
     setState(() => _response = response);
-
-    TextField(
-        controller: _cityTextController,
-        decoration: InputDecoration(labelText: 'City'),
-        textAlign: TextAlign.center);
-  }*/
+  }
 }
