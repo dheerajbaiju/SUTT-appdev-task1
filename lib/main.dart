@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                   Text(_response.weatherInfo.description,
                       style: TextStyle(fontSize: 20)),
+                  SizedBox(width: 60, height: 60),
                   Text(
                     'Feels:${_response.tempInfo.feelsLike}°',
                     style: TextStyle(fontSize: 20),
@@ -81,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                     textAlign: TextAlign.center),
               ),
             ),
-            ElevatedButton(onPressed: _search, child: Text('Current location')),
+            ElevatedButton(onPressed: _search, child: Text('Search')),
           ],
         ),
       ),
